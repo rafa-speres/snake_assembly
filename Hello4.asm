@@ -60,9 +60,9 @@ main:
 
 Initialize:
 		call ApagaTela
-		loadn r1, tela1Linha0	; Endereco onde comeca a primeira linha do cenario!!
-		;loadn r2, #0  			; cor branca!
-		;call ImprimeTela2   	; Rotina de Impresao de Cenario na Tela Inteira
+		loadn r1, #tela1Linha0	; Endereco onde comeca a primeira linha do cenario!!
+		loadn r2, #0  		; cor branca!
+		call ImprimeTela2   	; Rotina de Impresao de Cenario na Tela Inteira
 		
 		push r0
 		push r1
