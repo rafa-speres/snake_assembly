@@ -3,6 +3,27 @@
 ; Henrique Gualberto Marques - 
 ; João Otávio Cano - 
 
+; ------- TABELA DE CORES -------
+; adicione ao caracter para Selecionar a cor correspondente
+
+; 0 branco							0000 0000
+; 256 marrom						0001 0000
+; 512 verde							0010 0000
+; 768 oliva							0011 0000
+; 1024 azul marinho					0100 0000
+; 1280 roxo							0101 0000
+; 1536 teal							0110 0000
+; 1792 prata						0111 0000
+; 2048 cinza						1000 0000
+; 2304 vermelho						1001 0000
+; 2560 lima							1010 0000
+; 2816 amarelo						1011 0000
+; 3072 azul							1100 0000
+; 3328 rosa							1101 0000
+; 3584 aqua							1110 0000
+; 3840 branco						1111 0000
+
+
 SnakePos:  	var #500
 SnakeSize:	var #1
 Dir:		var #1 ; 0-direita, 1-baixo, 2-esquerda, 3-cima
@@ -17,7 +38,7 @@ EraseRestart:		string "                               "
 ; Main
 main:
 	call Initialize
-	call Draw_Stage
+	;call Draw_Stage
 	
 	loop:
 		ingame_loop:
@@ -40,7 +61,7 @@ main:
 Initialize:
 		call ApagaTela
 		loadn r1, #tela0Linha0	; Endereco onde comeca a primeira linha do cenario!!
-		loadn r2, #0  			; cor branca!
+		loadn r2, #512	        ; Utiliza cor verde
 		call ImprimeTela2   	; Rotina de Impresao de Cenario na Tela Inteira
 		
 		push r0
@@ -152,55 +173,55 @@ EraseSnake:
 	
 	rts
 
-Draw_Stage:
-	push r0
-	push r1
-	push r2
-	push r3
-	push r4
-	
-	loadn r0, #0
-	loadn r1, #39
-	
-	loadn r2, #557 ; - verde
-	
-	loadn r3, #40
-	loadn r4, #1200
-	
-	Stage_Loop1:
-		outchar r2, r0
-		add r0, r0, r3
-		nop
-		nop
-		outchar r2, r1	
-		
-		add r1, r1, r3
-		
-		cmp r0, r4
-		jle Stage_Loop1
-		
-	loadn r0, #1
-	loadn r1, #1161
-	
-	Stage_Loop2:
-		outchar r2, r0
-		inc r0
-		nop
-		nop
-		outchar r2, r1
-		
-		inc r1
-		
-		cmp r0, r3
-		jle Stage_Loop2
-	
-	pop r4
-	pop r3
-	pop r2
-	pop r1
-	pop r0
-	
-	rts
+;Draw_Stage:
+;	push r0
+;	push r1
+;	push r2
+;	push r3
+;	push r4
+;	
+;	loadn r0, #0
+;	loadn r1, #39
+;	
+;	loadn r2, #557 ; - verde
+;	
+;	loadn r3, #40
+;	loadn r4, #1200
+;	
+;	Stage_Loop1:
+;		outchar r2, r0
+;		add r0, r0, r3
+;		nop
+;		nop
+;		outchar r2, r1	
+;		
+;		add r1, r1, r3
+;		
+;		cmp r0, r4
+;		jle Stage_Loop1
+;		
+;	loadn r0, #1
+;	loadn r1, #1161
+;	
+;	Stage_Loop2:
+;		outchar r2, r0
+;		inc r0
+;		nop
+;		nop
+;		outchar r2, r1
+;		
+;		inc r1
+;		
+;		cmp r0, r3
+;		jle Stage_Loop2
+;	
+;	pop r4
+;	pop r3
+;	pop r2
+;	pop r1
+;	pop r0
+;	
+;	rts
 
 Move_Snake:
 	push r0	; Dir / SnakePos
@@ -782,33 +803,33 @@ ApagaTela:
 
 ;Desenho do campo de futebol
 
-tela0Linha0  : string "                                        "
-tela0Linha1  : string "                                        "
-tela0Linha2  : string "                                        "
-tela0Linha3  : string "                                        "
-tela0Linha4  : string "                                        "
-tela0Linha5  : string "                                        "
-tela0Linha6  : string "                                        "
-tela0Linha7  : string "                                        "
-tela0Linha8  : string "                                        "
-tela0Linha9  : string "                                        "
-tela0Linha10 : string " ---------                    --------- "
-tela0Linha11 : string "         |                    |         "
-tela0Linha12 : string "         |                    |         "
-tela0Linha13 : string " ---     |       _____        |     --- "
-tela0Linha14 : string "   |     |      |     |       |     |   "
-tela0Linha15 : string "   |     |      |     |       |     |   "
-tela0Linha16 : string "   |     |      |     |       |     |   "
-tela0Linha17 : string "   |     |      |_____|       |     |   "
-tela0Linha18 : string " ---     |                    |     --- "
-tela0Linha19 : string "         |                    |         "
-tela0Linha20 : string "         |                    |         "
-tela0Linha21 : string " ---------                    --------- "
-tela0Linha22 : string "                                        "
-tela0Linha23 : string "                                        "
-tela0Linha24 : string "                                        "
-tela0Linha25 : string "                                        "
-tela0Linha26 : string "                                        "
-tela0Linha27 : string "                                        "
-tela0Linha28 : string "                                        "
-tela0Linha29 : string "                                        "
+tela0Linha0  : string "|--------------------------------------|"
+tela0Linha1  : string "|_|                                  |_|"
+tela0Linha2  : string "|                                      |"
+tela0Linha3  : string "|                                      |"
+tela0Linha4  : string "|                                      |"
+tela0Linha5  : string "|                                      |"
+tela0Linha6  : string "|                                      |"
+tela0Linha7  : string "|                                      |"
+tela0Linha8  : string "|                                      |"
+tela0Linha9  : string "|                                      |"
+tela0Linha10 : string "|---------                    ---------|"
+tela0Linha11 : string "|        |                    |        |"
+tela0Linha12 : string "|        |                    |        |"
+tela0Linha13 : string "|---     |       ______       |     ---|"
+tela0Linha14 : string "|  |     |      |      |      |     |  |"
+tela0Linha15 : string "|  |     |      |BRASIL|      |     |  |"
+tela0Linha16 : string "|  |     |      | 2022 |      |     |  |"
+tela0Linha17 : string "|  |     |      |______|      |     |  |"
+tela0Linha18 : string "|---     |                    |     ---|"
+tela0Linha19 : string "|        |                    |        |"
+tela0Linha20 : string "|        |                    |        |"
+tela0Linha21 : string "|---------                    ---------|"
+tela0Linha22 : string "|                                      |"
+tela0Linha23 : string "|                                      |"
+tela0Linha24 : string "|                                      |"
+tela0Linha25 : string "|                                      |"
+tela0Linha26 : string "|                                      |"
+tela0Linha27 : string "|_                                    _|"
+tela0Linha28 : string "| |                                  | |"
+tela0Linha29 : string "|--------------------------------------|"
