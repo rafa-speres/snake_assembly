@@ -26,7 +26,7 @@
 
 Posicao_Cobra:  var #500
 Tamanho_Cobra:	var #1
-Direcao:		var #1 ; 0-Direita, 1-baixo, 2-esquerda, 3-cima
+Direcao:	var #1 ; 0-Direita, 1-baixo, 2-esquerda, 3-cima
 Posicao_Comida:	var #1
 Status_Comida:	var #1
 
