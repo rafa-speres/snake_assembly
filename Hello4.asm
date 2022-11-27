@@ -24,118 +24,123 @@
 ; 3840 branco						1111 0000
 
 
-SnakePos:  	var #500
-SnakeSize:	var #1
-Dir:		var #1 ; 0-direita, 1-baixo, 2-esquerda, 3-cima
-FoodPos:	var #1
-FoodStatus:	var #1
+Posicao_Cobra:  var #500
+Tamanho_Cobra:	var #1
+Direcao:		var #1 ; 0-Direita, 1-baixo, 2-esquerda, 3-cima
+Posicao_Comida:	var #1
+Status_Comida:	var #1
 
-GameOverMessage: 	string " SEM ALEGRIA PRO POVO "
-EraseGameOver:		string "                      "
-RestartMessage:		string " Aperte 'Space' para recomecar "
-EraseRestart:		string "                               "
+Mensagem_Derrota: 			string " SEM ALEGRIA PRO POVO "
+Limpa_Mensagem_Derrota:		string "                      "
+Mensagem_Recomecar:			string " Aperte 'Space' para recomecar "
+Limpa_Mensagem_Recomecar:	string "                               "
 
 ; Main
 main:
-	call Initialize
-	;call Draw_Stage
+	call Iniciar
+	;call Desenha_Mapa
 	
-	loop:
-		ingame_loop:
-			call Draw_Snake
-			call Dead_Snake
+	Loop:
+		Loop_Jogo:
+			call Desenha_Cobra
 			
-			call Move_Snake
-			call Replace_Food
+			call Cobra_Morreu
+		
+			call Move_Cobra
+			
+			call Troca_Comida
 					
 			call Delay
 				
-			jmp ingame_loop
-		GameOver_loop:
-			call Restart_Game
+			jmp Loop_Jogo
+			
+		Loop_Recomecar:
 		
-			jmp GameOver_loop
+			call Recomecar
+		
+			jmp Loop_Recomecar
 	
 ; Funções
 
-Initialize:
-		call ApagaTela
-		loadn r1, #tela0Linha0	; Endereco onde comeca a primeira linha do cenario!!
-		loadn r2, #512	        ; Utiliza cor verde
-		call ImprimeTela2   	; Rotina de Impresao de Cenario na Tela Inteira
+Iniciar:
 		
 		push r0
 		push r1
 		
-		loadn r0, #4
-		store SnakeSize, r0
+		;call Apagar_Tela
+		loadn r1, #tela0Linha0	; Endereco onde comeca a primeira linha do cenario!!
+		loadn r2, #512	        ; Utiliza cor verde
+		call ImprimirTela2  
 		
-		; SnakePos[0] = 460
-		loadn 	r0, #SnakePos
+		loadn r0, #4
+		store Tamanho_Cobra, r0
+		
+		; Posicao_Cobra[0] = 460
+		loadn 	r0, #Posicao_Cobra
 		loadn 	r1, #460
 		storei 	r0, r1
 		
-		; SnakePos[1] = 459
+		; Posicao_Cobra[1] = 459
 		inc 	r0
 		dec 	r1
 		storei 	r0, r1
 		
-		; SnakePos[2] = 458
+		; Posicao_Cobra[2] = 458
 		inc 	r0
 		dec 	r1
 		storei 	r0, r1
 		
-		; SnakePos[3] = 457
+		; Posicao_Cobra[3] = 457
 		inc 	r0
 		dec 	r1
 		storei 	r0, r1
 		
-		; SnakePos[3] = 456
+		; Posicao_Cobra[4] = 456
 		inc 	r0
 		dec 	r1
 		storei 	r0, r1
 		
-		; SnakePos[5] = -1
+		; Posicao_Cobra[5] = -1
 		inc 	r0
 		loadn 	r1, #0
 		storei 	r0, r1
 				
-		call FirstPrintSnake
+		call Primeira_Cobra
 		
 		loadn r0, #0
-		store Dir, r0
+		store Direcao, r0
 		
 		pop r1
 		pop r0
 		
 		rts
 
-FirstPrintSnake:
+Primeira_Cobra:
 	push r0
 	push r1
 	push r2
 	push r3
 	
-	loadn r0, #SnakePos		; r0 = & SnakePos
-	loadn r1, #'}'			; r1 = '}'
-	loadi r2, r0			; r2 = SnakePos[0]
+	loadn r0, #Posicao_Cobra		; r0 = & Posicao_Cobra
+	loadn r1, #'}'					; r1 = '}'
+	loadi r2, r0					; r2 = Posicao_Cobra[0]
 		
-	loadn 	r3, #0			; r3 = 0
+	loadn 	r3, #0					; r3 = 0
 	
-	Print_Loop:
+	Loop_Para_Impressao:
 		outchar r1, r2
 		
 		inc 	r0
 		loadi 	r2, r0
 		
 		cmp r2, r3
-		jne Print_Loop
+		jne Loop_Para_Impressao
 	
 	
 	loadn 	r0, #820
 	loadn 	r1, #'*'
 	outchar r1, r0
-	store 	FoodPos, r0
+	store 	Posicao_Comida, r0
 	
 	pop	r3
 	pop r2
@@ -144,27 +149,27 @@ FirstPrintSnake:
 	
 	rts
 	
-EraseSnake:
+Limpa_Cobra:
 	push r0
 	push r1
 	push r2
 	push r3
 	
-	loadn 	r0, #SnakePos		; r0 = & SnakePos
+	loadn 	r0, #Posicao_Cobra		; r0 = & Posicao_Cobra
 	inc 	r0
-	loadn 	r1, #' '			; r1 = ' '
-	loadi 	r2, r0			; r2 = SnakePos[0]
+	loadn 	r1, #' '				; r1 = ' '
+	loadi 	r2, r0					; r2 = Posicao_Cobra[0]
 		
-	loadn 	r3, #0			; r3 = 0
+	loadn 	r3, #0					; r3 = 0
 	
-	Print_Loop:
+	Loop_Para_Impressao:
 		outchar r1, r2
 		
 		inc 	r0
 		loadi 	r2, r0
 		
 		cmp r2, r3
-		jne Print_Loop
+		jne Loop_Para_Impressao
 	
 	pop	r3
 	pop r2
@@ -173,7 +178,7 @@ EraseSnake:
 	
 	rts
 
-;Draw_Stage:
+;Desenha_Mapa:
 ;	push r0
 ;	push r1
 ;	push r2
@@ -223,8 +228,8 @@ EraseSnake:
 ;	
 ;	rts
 
-Move_Snake:
-	push r0	; Dir / SnakePos
+Move_Cobra:
+	push r0	; Direcao / Posicao_Cobra
 	push r1	; inchar
 	push r2 ; local helper
 	push r3
@@ -235,38 +240,38 @@ Move_Snake:
 	loadn 	r1, #0
 	mod 	r0, r6, r0		; r1 = r0 % r1 (Teste condições de contorno)
 	cmp 	r0, r1
-	jne Move_End
+	jne Fim_Movimento
 	; =============
 	
-	Check_Food:
-		load 	r0, FoodPos
-		loadn 	r1, #SnakePos
+	Verifica_Comida:
+		load 	r0, Posicao_Comida
+		loadn 	r1, #Posicao_Cobra
 		loadi 	r2, r1
 		
 		cmp r0, r2
-		jne Spread_Move
+		jne Espalha_Movimento
 		
-		load 	r0, SnakeSize
+		load 	r0, Tamanho_Cobra
 		inc 	r0
-		store 	SnakeSize, r0
+		store 	Tamanho_Cobra, r0
 		
 		loadn 	r0, #0
 		dec 	r0
-		store 	FoodStatus, r0
+		store 	Status_Comida, r0
 		
-	Spread_Move:
-		loadn 	r0, #SnakePos
-		loadn 	r1, #SnakePos
-		load 	r2, SnakeSize
+	Espalha_Movimento:
+		loadn 	r0, #Posicao_Cobra
+		loadn 	r1, #Posicao_Cobra
+		load 	r2, Tamanho_Cobra
 		
-		add 	r0, r0, r2		; r0 = SnakePos[Size]
+		add 	r0, r0, r2		; r0 = Posicao_Cobra[Size]
 		
-		dec 	r2				; r1 = SnakePos[Size-1]
+		dec 	r2				; r1 = Posicao_Cobra[Size-1]
 		add 	r1, r1, r2
 		
 		loadn 	r4, #0
 		
-		Spread_Loop:
+		Loop_Espalha_Movimento:
 			loadi 	r3, r1
 			storei 	r0, r3
 			
@@ -276,9 +281,9 @@ Move_Snake:
 			cmp r2, r4
 			dec r2
 			
-			jne Spread_Loop	
+			jne Loop_Espalha_Movimento	
 	
-	Change_Dir:
+	Muda_Direcao:
 		inchar 	r1
 		
 		loadn r2, #100	; char r4 = 'd'
@@ -297,104 +302,104 @@ Move_Snake:
 		cmp r1, r2
 		jeq Move_W		
 		
-		jmp Update_Move
+		jmp Atualiza_Movimento
 	
 		Move_D:
 			loadn 	r0, #0
 			; Impede de "ir pra trás"
 			loadn 	r1, #2
-			load  	r2, Dir
+			load  	r2, Direcao
 			cmp 	r1, r2
-			jeq 	Move_Left
+			jeq 	Move_Para_Esquerda
 			
-			store 	Dir, r0
-			jmp 	Move_Right
+			store 	Direcao, r0
+			jmp 	Move_Para_Direita
 		Move_S:
 			loadn 	r0, #1
 			; Impede de "ir pra trás"
 			loadn 	r1, #3
-			load  	r2, Dir
+			load  	r2, Direcao
 			cmp 	r1, r2
-			jeq 	Move_Up
+			jeq 	Move_Para_Cima
 			
-			store 	Dir, r0
-			jmp 	Move_Down
+			store 	Direcao, r0
+			jmp 	Move_Para_Baixo
 		Move_A:
 			loadn 	r0, #2
 			; Impede de "ir pra trás"
 			loadn 	r1, #0
-			load  	r2, Dir
+			load  	r2, Direcao
 			cmp 	r1, r2
-			jeq 	Move_Right
+			jeq 	Move_Para_Direita
 			
-			store 	Dir, r0
-			jmp 	Move_Left
+			store 	Direcao, r0
+			jmp 	Move_Para_Esquerda
 		Move_W:
 			loadn 	r0, #3
 			; Impede de "ir pra trás"
 			loadn 	r1, #1
-			load  	r2, Dir
+			load  	r2, Direcao
 			cmp 	r1, r2
-			jeq 	Move_Down
+			jeq 	Move_Para_Baixo
 			
-			store 	Dir, r0
-			jmp 	Move_Up
+			store 	Direcao, r0
+			jmp 	Move_Para_Cima
 	
-	Update_Move:
-		load 	r0, Dir
+	Atualiza_Movimento:
+		load 	r0, Direcao
 				
 		loadn 	r2, #0
 		cmp 	r0, r2
-		jeq 	Move_Right
+		jeq 	Move_Para_Direita
 		
 		loadn 	r2, #1
 		cmp 	r0, r2
-		jeq 	Move_Down
+		jeq 	Move_Para_Baixo
 		
 		loadn 	r2, #2
 		cmp 	r0, r2
-		jeq 	Move_Left
+		jeq 	Move_Para_Esquerda
 		
 		loadn 	r2, #3
 		cmp 	r0, r2
-		jeq 	Move_Up
+		jeq 	Move_Para_Cima
 		
-		jmp Move_End
+		jmp Fim_Movimento
 		
-		Move_Right:
-			loadn 	r0, #SnakePos	; r0 = & SnakePos
-			loadi 	r1, r0			; r1 = SnakePos[0]
+		Move_Para_Direita:
+			loadn 	r0, #Posicao_Cobra	; r0 = & Posicao_Cobra
+			loadi 	r1, r0			; r1 = Posicao_Cobra[0]
 			inc 	r1				; r1++
 			storei 	r0, r1
 			
-			jmp Move_End
+			jmp Fim_Movimento
 				
-		Move_Down:
-			loadn 	r0, #SnakePos	; r0 = & SnakePos
-			loadi 	r1, r0			; r1 = SnakePos[0]
+		Move_Para_Baixo:
+			loadn 	r0, #Posicao_Cobra	; r0 = & Posicao_Cobra
+			loadi 	r1, r0			; r1 = Posicao_Cobra[0]
 			loadn 	r2, #40
 			add 	r1, r1, r2
 			storei 	r0, r1
 			
-			jmp Move_End
+			jmp Fim_Movimento
 		
-		Move_Left:
-			loadn 	r0, #SnakePos	; r0 = & SnakePos
-			loadi 	r1, r0			; r1 = SnakePos[0]
+		Move_Para_Esquerda:
+			loadn 	r0, #Posicao_Cobra	; r0 = & Posicao_Cobra
+			loadi 	r1, r0			; r1 = Posicao_Cobra[0]
 			dec 	r1				; r1--
 			storei 	r0, r1
 			
-			jmp Move_End
-		Move_Up:
-			loadn 	r0, #SnakePos	; r0 = & SnakePos
-			loadi 	r1, r0			; r1 = SnakePos[0]
+			jmp Fim_Movimento
+		Move_Para_Cima:
+			loadn 	r0, #Posicao_Cobra	; r0 = & Posicao_Cobra
+			loadi 	r1, r0			; r1 = Posicao_Cobra[0]
 			loadn 	r2, #40
 			sub 	r1, r1, r2
 			storei 	r0, r1
 			
-			jmp Move_End
+			jmp Fim_Movimento
 	
-	Move_End:
+	Fim_Movimento:
 		pop r4
 		pop r3
 		pop r2
@@ -403,173 +408,174 @@ Move_Snake:
 
 	rts
 
-Replace_Food:
+Troca_Comida:
 	push r0
 	push r1
 
 	loadn 	r0, #0
 	dec 	r0
-	load 	r1, FoodStatus
+	load 	r1, Status_Comida
 	cmp 	r0, r1
 	
-	jne Replace_End
+	jne Fim_Troca
 	
 	loadn r1, #0
-	store FoodStatus, r1
-	load  r1, FoodPos
+	store Status_Comida, r1
+	load  r1, Posicao_Comida
 	
-	load r0, Dir
+	load r0, Direcao
 	
 	loadn r2, #0
 	cmp r0, r2
-	jeq Replace_Right
+	jeq Troca_Direita
 	
 	loadn r2, #1
 	cmp r0, r2
-	jeq Replace_Down
+	jeq Troca_Baixo
 	
 	loadn r2, #2
 	cmp r0, r2
-	jeq Replace_Left
+	jeq Troca_Esquerda
 	
 	loadn r2, #3
 	cmp r0, r2
-	jeq Replace_Up
+	jeq Troca_Cima
 	
-	Replace_Right:
+	Troca_Direita:
 		loadn r3, #355
 		add r1, r1, r3
-		jmp Replace_Boundaries
-	Replace_Down:
+		jmp Troca_Limites
+	Troca_Baixo:
 		loadn r3, #445
 		sub r1, r1, r3
-		jmp Replace_Boundaries
-	Replace_Left:
+		jmp Troca_Limites
+	Troca_Esquerda:
 		loadn r3, #395
 		sub r1, r1, r3
-		jmp Replace_Boundaries
-	Replace_Up:
+		jmp Troca_Limites
+	Troca_Cima:
 		loadn r3, #485
 		add r1, r1, r3
-		jmp Replace_Boundaries
+		jmp Troca_Limites
 	
 	
-	Replace_Boundaries:
+	Troca_Limites:
 		loadn r2, #40
 		cmp r1, r2
-		jle Replace_Lower
+		jle Troca_Para_Baixo
 		
 		loadn r2, #1160
 		cmp r1, r2
-		jgr Replace_Upper
+		jgr Troca_Para_Cima
 		
 		loadn r0, #40
 		loadn r3, #1
 		mod r2, r1, r0
 		cmp r2, r3
-		jel Replace_West
+		jel Troca_Para_Esquerda
 		
 		loadn r0, #40
 		loadn r3, #39
 		mod r2, r1, r0
 		cmp r2, r3
-		jeg Replace_East
+		jeg Troca_Para_Direita
 		
-		jmp Replace_Update
+		jmp Realiza_Troca
 		
-		Replace_Upper:
+		Troca_Para_Cima:
 			loadn r1, #215
-			jmp Replace_Update
-		Replace_Lower:
+			jmp Realiza_Troca
+		Troca_Para_Baixo:
 			loadn r1, #1035
-			jmp Replace_Update
-		Replace_East:
+			jmp Realiza_Troca
+		Troca_Para_Direita:
 			loadn r1, #835
-			jmp Replace_Update
-		Replace_West:
+			jmp Realiza_Troca
+		Troca_Para_Esquerda:
 			loadn r1, #205
-			jmp Replace_Update
+			jmp Realiza_Troca
 			
-		Replace_Update:
-			store FoodPos, r1
-			loadn r0, #'*'
+		Realiza_Troca:
+			store Posicao_Comida, r1
+			loadn r0, #2927      		; r1 = `o` em cor amarela
 			outchar r0, r1
 	
-	Replace_End:
+	Fim_Troca:
 		pop r1
 		pop r0
 	
 	rts
 
-Dead_Snake:
-	loadn r0, #SnakePos
+Cobra_Morreu:
+	loadn r0, #Posicao_Cobra
 	loadi r1, r0
 	
-	; Trombou na parede direita
+	; Trombou na parede Direcaoeita
 	loadn r2, #40
 	loadn r3, #39
 	mod r2, r1, r2		; r2 = r1 % r2 (Teste condições de contorno)
 	cmp r2, r3
-	jeq GameOver_Activate
+	jeq Tratamento_Fim_Jogo
 	
 	; Trombou na parede esquerda
 	loadn r2, #40
 	loadn r3, #0
 	mod r2, r1, r2		; r2 = r1 % r2 (Teste condições de contorno)
 	cmp r2, r3
-	jeq GameOver_Activate
+	jeq Tratamento_Fim_Jogo
 	
 	; Trombou na parede esquerda
 	loadn r2, #40
 	cmp r1, r2
-	jle GameOver_Activate
+	jle Tratamento_Fim_Jogo
 	
 	; Trombou na parede esquerda
 	loadn r2, #1160
 	cmp r1, r2
-	jgr GameOver_Activate
+	jgr Tratamento_Fim_Jogo
 	
 	; Trombou na própria cobra
-	Collision_Check:
-		load 	r2, SnakeSize
+	Verifica_Colisao:
+		load 	r2, Tamanho_Cobra
 		loadn 	r3, #1
 		loadi 	r4, r0			; Posição da cabeça
 		
-		Collision_Loop:
+		Loop_Colisao:
 			inc 	r0
 			loadi 	r1, r0
 			cmp r1, r4
-			jeq GameOver_Activate
+			jeq Tratamento_Fim_Jogo
 			
 			dec r2
 			cmp r2, r3
-			jne Collision_Loop
+			jne Loop_Colisao
 		
 	
-	jmp Dead_Snake_End
+	jmp Fim_Cobra_Morreu
 	
-	GameOver_Activate:
-		load 	r0, FoodPos
+	Tratamento_Fim_Jogo:
+
+		load 	r0, Posicao_Comida
 		loadn 	r1, #' '
 		outchar r1, r0
 	
 		loadn r0, #609
-		loadn r1, #GameOverMessage
+		loadn r1, #Mensagem_Derrota
 		loadn r2, #2816
-		call Imprime
+		call Imprimir
 		
 		loadn r0, #685
-		loadn r1, #RestartMessage
+		loadn r1, #Mensagem_Recomecar
 		loadn r2, #512
-		call Imprime
+		call Imprimir
 		
-		jmp GameOver_loop
+		jmp Loop_Recomecar
 	
-	Dead_Snake_End:
-	
+	Fim_Cobra_Morreu:
+		
 	rts
 
-Draw_Snake:
+Desenha_Cobra:
 	push r0
 	push r1
 	push r2
@@ -580,26 +586,26 @@ Draw_Snake:
 	loadn 	r1, #0
 	mod 	r0, r6, r0		; r1 = r0 % r1 (Teste condições de contorno)
 	cmp 	r0, r1
-	jne Draw_End
+	jne Fim_Desenha_Cobra
 	; =============
 	
-	load 	r0, FoodPos
-	loadn 	r1, #1647       ; r1 = `o` em cor teal
+	load 	r0, Posicao_Comida
+	loadn 	r1, #2927       ; r1 = `o` em cor amarela
 	outchar r1, r0
 	
-	loadn 	r0, #SnakePos	; r0 = end SnakePos
+	loadn 	r0, #Posicao_Cobra	; r0 = end Posicao_Cobra
 	loadn 	r1, #2870	    ; r1 = '6 amarelo'
-	loadi 	r2, r0			; r2 = SnakePos[0]
+	loadi 	r2, r0			; r2 = Posicao_Cobra[0]
 	outchar r1, r2			
 	
-	loadn 	r0, #SnakePos	; r0 = & SnakePos
+	loadn 	r0, #Posicao_Cobra	; r0 = & Posicao_Cobra
 	loadn 	r1, #' '		; r1 = ' '
-	load 	r3, SnakeSize	; r3 = SnakeSize
-	add 	r0, r0, r3		; r0 += SnakeSize
-	loadi 	r2, r0			; r2 = SnakePos[SnakeSize]
+	load 	r3, Tamanho_Cobra	; r3 = Tamanho_Cobra
+	add 	r0, r0, r3		; r0 += Tamanho_Cobra
+	loadi 	r2, r0			; r2 = Posicao_Cobra[Tamanho_Cobra]
 	outchar r1, r2
 	
-	Draw_End:
+	Fim_Desenha_Cobra:
 		pop	r3
 		pop r2
 		pop r1
@@ -613,64 +619,64 @@ Delay:
 	inc r6
 	loadn r0, #1000000
 	cmp r6, r0
-	jgr Reset_Timer
+	jgr Reseta_Timer
 	
-	jmp Timer_End
+	jmp Fim_Timer
 	
-	Reset_Timer:
+	Reseta_Timer:
 		loadn r6, #0
-	Timer_End:		
+	Fim_Timer:		
 		pop r0
 	
 	rts
 	
-Delay2: ; Delay para desenho do cenario
-	push r0
-	
-	inc r6
-	loadn r0, #1
-	cmp r6, r0
-	jgr Reset_Timer
-	
-	jmp Timer_End
-	
-	Reset_Timer:
-		loadn r6, #0
-	Timer_End:		
-		pop r0
-	
-	rts
+;Delay2: ; Delay para desenho do cenario
+;	push r0
+;	
+;	inc r6
+;	loadn r0, #1
+;	cmp r6, r0
+;	jgr Reseta_Timer
+;	
+;	jmp Fim_Timer
+;	
+;	Reseta_Timer:
+;		loadn r6, #0
+;	Fim_Timer:		
+;		pop r0
+;	
+;	rts
 
-Restart_Game:
+Recomecar:
 	inchar 	r0
 	loadn 	r1, #' '
 	
 	cmp r0, r1
-	jeq Restart_Activate
+	jeq Tratamento_Recomecar
 	
-	jmp Restart_End
+	jmp Fim_Recomecar
 	
-	Restart_Activate:
+	Tratamento_Recomecar:
 		loadn r0, #609
-		loadn r1, #EraseGameOver
+		loadn r1, #Limpa_Mensagem_Derrota
 		loadn r2, #0
-		call Imprime
+		call Imprimir
 		
 		loadn r0, #685
-		loadn r1, #EraseRestart
+		loadn r1, #Limpa_Mensagem_Recomecar
 		loadn r2, #0
-		call Imprime
+		call Imprimir
 	
-		call EraseSnake
-		call Initialize
+		call Limpa_Cobra
+		call Iniciar
 		
-		jmp ingame_loop
+		jmp Loop_Jogo
 		
-	Restart_End:
+	Fim_Recomecar:
 	
 	rts
 
-Imprime:
+Imprimir:
 	push r0		; Posição na tela para imprimir a string
 	push r1		; Endereço da string a ser impressa
 	push r2		; Cor da mensagem
@@ -680,17 +686,17 @@ Imprime:
 	
 	loadn r3, #'\0'
 
-	LoopImprime:	
+	Loop_Imprimir:	
 		loadi r4, r1
 		cmp r4, r3
-		jeq SaiImprime
+		jeq Fim_Imprimir
 		add r4, r2, r4
 		outchar r4, r0
 		inc r0
 		inc r1
-		jmp LoopImprime
+		jmp Loop_Imprimir
 		
-	SaiImprime:	
+	Fim_Imprimir:	
 		pop r4	
 		pop r3
 		pop r2
@@ -700,10 +706,10 @@ Imprime:
 	rts
 
 ;********************************************************
-;                       IMPRIME TELA2
+;                       Imprimir TELA2
 ;********************************************************	
 
-ImprimeTela2: 	;  Rotina de Impresao de Cenario na Tela Inteira
+ImprimirTela2: 	;  Rotina de Impresao de Cenario na Tela Inteira
 		;  r1 = endereco onde comeca a primeira linha do Cenario
 		;  r2 = cor do Cenario para ser impresso
 
@@ -721,13 +727,13 @@ ImprimeTela2: 	;  Rotina de Impresao de Cenario na Tela Inteira
 	loadn R5, #1200 ; Limite da tela!
 	loadn R6, #tela0Linha0	; Endereco onde comeca a primeira linha do cenario!!
 	
-   ImprimeTela2_Loop:
-		call ImprimeStr2
+   ImprimirTela2_Loop:
+		call Imprimir_String
 		add r0, r0, r3  	; incrementaposicao para a segunda linha na tela -->  r0 = R0 + 40
 		add r1, r1, r4  	; incrementa o ponteiro para o comeco da proxima linha na memoria (40 + 1 porcausa do /0 !!) --> r1 = r1 + 41
 		add r6, r6, r4  	; incrementa o ponteiro para o comeco da proxima linha na memoria (40 + 1 porcausa do /0 !!) --> r1 = r1 + 41
 		cmp r0, r5			; Compara r0 com 1200
-		jne ImprimeTela2_Loop	; Enquanto r0 < 1200
+		jne ImprimirTela2_Loop	; Enquanto r0 < 1200
 
 	pop r6	; Resgata os valores dos registradores utilizados na Subrotina da Pilha
 	pop r5
@@ -741,10 +747,10 @@ ImprimeTela2: 	;  Rotina de Impresao de Cenario na Tela Inteira
 ;---------------------
 
 ;********************************************************
-;                   IMPRIME STRING2
+;                   Imprimir STRING2
 ;********************************************************
 	
-ImprimeStr2:	;  Rotina de Impresao de Mensagens:    r0 = Posicao da tela que o primeiro caractere da mensagem sera' impresso;  r1 = endereco onde comeca a mensagem; r2 = cor da mensagem.   Obs: a mensagem sera' impressa ate' encontrar "/0"
+Imprimir_String:	;  Rotina de Impresao de Mensagens:    r0 = Posicao da tela que o primeiro caractere da mensagem sera' impresso;  r1 = endereco onde comeca a mensagem; r2 = cor da mensagem.   Obs: a mensagem sera' impressa ate' encontrar "/0"
 	push r0	; protege o r0 na pilha para preservar seu valor
 	push r1	; protege o r1 na pilha para preservar seu valor
 	push r2	; protege o r1 na pilha para preservar seu valor
@@ -757,22 +763,22 @@ ImprimeStr2:	;  Rotina de Impresao de Mensagens:    r0 = Posicao da tela que o p
 	loadn r3, #'\0'	; Criterio de parada
 	loadn r5, #' '	; Espaco em Branco
 
-   ImprimeStr2_Loop:	
+   Imprimir_String_Loop:	
 		loadi r4, r1
 		cmp r4, r3		; If (Char == \0)  vai Embora
-		jeq ImprimeStr2_Sai
+		jeq Imprimir_String_Sai
 		cmp r4, r5		; If (Char == ' ')  vai Pula outchar do espaco para na apagar outros caracteres
-		jeq ImprimeStr2_Skip
+		jeq Imprimir_String_Skip
 		add r4, r2, r4	; Soma a Cor
-		outchar r4, r0	; Imprime o caractere na tela
+		outchar r4, r0	; Imprimir o caractere na tela
    		storei r6, r4
-   ImprimeStr2_Skip:
+   Imprimir_String_Skip:
 		inc r0			; Incrementa a posicao na tela
 		inc r1			; Incrementa o ponteiro da String
 		inc r6
-		jmp ImprimeStr2_Loop
+		jmp Imprimir_String_Loop
 	
-   ImprimeStr2_Sai:	
+   Imprimir_String_Sai:	
 	pop r6	; Resgata os valores dos registradores utilizados na Subrotina da Pilha
 	pop r5
 	pop r4
@@ -785,17 +791,17 @@ ImprimeStr2:	;  Rotina de Impresao de Mensagens:    r0 = Posicao da tela que o p
 ;********************************************************
 ;                       APAGA TELA
 ;********************************************************
-ApagaTela:
+Apagar_Tela:
 	push r0
 	push r1
 	
 	loadn r0, #1200		; apaga as 1200 posicoes da Tela
 	loadn r1, #' '		; com "espaco"
 	
-	   ApagaTela_Loop:	;;label for(r0=1200;r3>0;r3--)
+	   Apagar_Tela_Loop:	;;label for(r0=1200;r3>0;r3--)
 		dec r0
 		outchar r1, r0
-		jnz ApagaTela_Loop
+		jnz Apagar_Tela_Loop
  
 	pop r1
 	pop r0
