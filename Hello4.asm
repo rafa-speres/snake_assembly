@@ -26,7 +26,7 @@
 
 Posicao_Cobra:  var #500
 Tamanho_Cobra:	var #1
-Direcao:	var #1 ; 0-Direita, 1-baixo, 2-esquerda, 3-cima
+Direcao:		var #1 ; 0-Direita, 1-baixo, 2-esquerda, 3-cima
 Posicao_Comida:	var #1
 Status_Comida:	var #1
 
@@ -69,7 +69,7 @@ Iniciar:
 		
 		;call Apagar_Tela
 		loadn r1, #tela0Linha0	; Endereco onde comeca a primeira linha do cenario!!
-		loadn r2, #512	        ; Utiliza cor verde
+		loadn r2, #0	        ; Utiliza cor verde
 		call ImprimirTela2  
 		
 		loadn r0, #4
@@ -590,7 +590,7 @@ Desenha_Cobra:
 	; =============
 	
 	load 	r0, Posicao_Comida
-	loadn 	r1, #2927       ; r1 = `o` em cor amarela
+	loadn 	r1, #591       ; r1 = `O` em cor amarela
 	outchar r1, r0
 	
 	loadn 	r0, #Posicao_Cobra	; r0 = end Posicao_Cobra
