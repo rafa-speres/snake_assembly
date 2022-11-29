@@ -1,7 +1,7 @@
 ; Snake do Hexa
 ; Rafael Scalon Peres Conti - nUSP: 11871181
-; Henrique Gualberto Marques - 
-; João Otávio Cano - 
+; Henrique Gualberto Marques - nUSP: 13692380
+; João Otávio Cano - nUSP: 11858651
 
 ; ------- TABELA DE CORES -------
 ; adicione ao caracter para Selecionar a cor correspondente
@@ -814,7 +814,7 @@ tela0Linha1  : string "|_|                                  |_|"
 tela0Linha2  : string "|                                      |"
 tela0Linha3  : string "|                                      |"
 tela0Linha4  : string "|                                      |"
-tela0Linha5  : string "|                                      |"
+tela0Linha5  : string "|             RUMO AO HEXA             |"
 tela0Linha6  : string "|                                      |"
 tela0Linha7  : string "|                                      |"
 tela0Linha8  : string "|                                      |"
