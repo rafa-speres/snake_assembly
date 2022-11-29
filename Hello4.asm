@@ -590,7 +590,7 @@ Desenha_Cobra:
 	; =============
 	
 	load 	r0, Posicao_Comida
-	loadn 	r1, #591       ; r1 = `O` em cor amarela
+	loadn 	r1, #591       ; r1 = `O` em cor verde
 	outchar r1, r0
 	
 	loadn 	r0, #Posicao_Cobra	; r0 = end Posicao_Cobra
