@@ -67,10 +67,7 @@ Iniciar:
 		push r0
 		push r1
 		
-		;call Apagar_Tela
-		loadn r1, #tela0Linha0	; Endereco onde comeca a primeira linha do cenario!!
-		loadn r2, #0	        ; Utiliza cor verde
-		call ImprimirTela2  
+		call Desenha_Tela
 		
 		loadn r0, #4
 		store Tamanho_Cobra, r0
@@ -114,6 +111,18 @@ Iniciar:
 		pop r0
 		
 		rts
+		
+Desenha_Tela:
+	push r1
+	push r2
+    loadn r1, #tela0Linha0	; Endereco onde comeca a primeira linha do cenario!!
+	loadn r2, #0	        ; Utiliza cor verde
+	call ImprimirTela2
+	pop r1
+	pop r2
+	
+	rts
+;-------------------------------------
 
 Primeira_Cobra:
 	push r0
@@ -390,14 +399,16 @@ Move_Cobra:
 			storei 	r0, r1
 			
 			jmp Fim_Movimento
+			
 		Move_Para_Cima:
 			loadn 	r0, #Posicao_Cobra	; r0 = & Posicao_Cobra
 			loadi 	r1, r0			; r1 = Posicao_Cobra[0]
 			loadn 	r2, #40
 			sub 	r1, r1, r2
 			storei 	r0, r1
-			
+		
 			jmp Fim_Movimento
+	
 	
 	Fim_Movimento:
 		pop r4
@@ -580,7 +591,7 @@ Desenha_Cobra:
 	push r1
 	push r2
 	push r3 
-	
+
 	; Sincronização
 	loadn 	r0, #1000
 	loadn 	r1, #0
@@ -588,6 +599,8 @@ Desenha_Cobra:
 	cmp 	r0, r1
 	jne Fim_Desenha_Cobra
 	; =============
+	
+	call Desenha_Tela
 	
 	load 	r0, Posicao_Comida
 	loadn 	r1, #591       ; r1 = `O` em cor verde
@@ -605,6 +618,12 @@ Desenha_Cobra:
 	loadi 	r2, r0			; r2 = Posicao_Cobra[Tamanho_Cobra]
 	outchar r1, r2
 	
+		;call Desenha_Tela
+	;loadn r1, #tela0Linha0	; Endereco onde comeca a primeira linha do cenario!!
+	;loadn r2, #0	        ; Utiliza cor verde
+	;call ImprimirTela2
+	
+
 	Fim_Desenha_Cobra:
 		pop	r3
 		pop r2
@@ -613,11 +632,13 @@ Desenha_Cobra:
 	
 	rts
 ;----------------------------------
+
+	
 Delay:
 	push r0
 	
 	inc r6
-	loadn r0, #1000000
+	loadn r0, #1000
 	cmp r6, r0
 	jgr Reseta_Timer
 	
@@ -704,6 +725,77 @@ Imprimir:
 		pop r0
 		
 	rts
+	
+	
+;********************************************************
+;                       IMPRIME TELA
+;********************************************************	
+
+ImprimeTela: 	;  Rotina de Impresao de Cenario na Tela Inteira
+		;  r1 = endereco onde comeca a primeira linha do Cenario
+		;  r2 = cor do Cenario para ser impresso
+
+	push r0	; protege o r3 na pilha para ser usado na subrotina
+	push r1	; protege o r1 na pilha para preservar seu valor
+	push r2	; protege o r1 na pilha para preservar seu valor
+	push r3	; protege o r3 na pilha para ser usado na subrotina
+	push r4	; protege o r4 na pilha para ser usado na subrotina
+	push r5	; protege o r4 na pilha para ser usado na subrotina
+
+	loadn R0, #0  	; posicao inicial tem que ser o comeco da tela!
+	loadn R3, #40  	; Incremento da posicao da tela!
+	loadn R4, #41  	; incremento do ponteiro das linhas da tela
+	loadn R5, #1200 ; Limite da tela!
+	
+   ImprimeTela_Loop:
+		call ImprimeStr
+		add r0, r0, r3  	; incrementaposicao para a segunda linha na tela -->  r0 = R0 + 40
+		add r1, r1, r4  	; incrementa o ponteiro para o comeco da proxima linha na memoria (40 + 1 porcausa do /0 !!) --> r1 = r1 + 41
+		cmp r0, r5			; Compara r0 com 1200
+		jne ImprimeTela_Loop	; Enquanto r0 < 1200
+
+	pop r5	; Resgata os valores dos registradores utilizados na Subrotina da Pilha
+	pop r4
+	pop r3
+	pop r2
+	pop r1
+	pop r0
+	rts
+				
+;---------------------
+
+;********************************************************
+;                   IMPRIME STRING
+;********************************************************
+	
+ImprimeStr:	;  Rotina de Impresao de Mensagens:    r0 = Posicao da tela que o primeiro caractere da mensagem sera' impresso;  r1 = endereco onde comeca a mensagem; r2 = cor da mensagem.   Obs: a mensagem sera' impressa ate' encontrar "/0"
+	push r0	; protege o r0 na pilha para preservar seu valor
+	push r1	; protege o r1 na pilha para preservar seu valor
+	push r2	; protege o r1 na pilha para preservar seu valor
+	push r3	; protege o r3 na pilha para ser usado na subrotina
+	push r4	; protege o r4 na pilha para ser usado na subrotina
+	
+	loadn r3, #'\0'	; Criterio de parada
+
+   ImprimeStr_Loop:	
+		loadi r4, r1
+		cmp r4, r3		; If (Char == \0)  vai Embora
+		jeq ImprimeStr_Sai
+		add r4, r2, r4	; Soma a Cor
+		outchar r4, r0	; Imprime o caractere na tela
+		inc r0			; Incrementa a posicao na tela
+		inc r1			; Incrementa o ponteiro da String
+		jmp ImprimeStr_Loop
+	
+   ImprimeStr_Sai:	
+	pop r4	; Resgata os valores dos registradores utilizados na Subrotina da Pilha
+	pop r3
+	pop r2
+	pop r1
+	pop r0
+	rts
+	
+;------------------------	
 
 ;********************************************************
 ;                       Imprimir TELA2
@@ -814,7 +906,7 @@ tela0Linha1  : string "|_|                                  |_|"
 tela0Linha2  : string "|                                      |"
 tela0Linha3  : string "|                                      |"
 tela0Linha4  : string "|                                      |"
-tela0Linha5  : string "|             RUMO AO HEXA             |"
+tela0Linha5  : string "|                                      |"
 tela0Linha6  : string "|                                      |"
 tela0Linha7  : string "|                                      |"
 tela0Linha8  : string "|                                      |"
