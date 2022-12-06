@@ -187,56 +187,6 @@ Limpa_Cobra:
 	
 	rts
 
-;Desenha_Mapa:
-;	push r0
-;	push r1
-;	push r2
-;	push r3
-;	push r4
-;	
-;	loadn r0, #0
-;	loadn r1, #39
-;	
-;	loadn r2, #557 ; - verde
-;	
-;	loadn r3, #40
-;	loadn r4, #1200
-;	
-;	Stage_Loop1:
-;		outchar r2, r0
-;		add r0, r0, r3
-;		nop
-;		nop
-;		outchar r2, r1	
-;		
-;		add r1, r1, r3
-;		
-;		cmp r0, r4
-;		jle Stage_Loop1
-;		
-;	loadn r0, #1
-;	loadn r1, #1161
-;	
-;	Stage_Loop2:
-;		outchar r2, r0
-;		inc r0
-;		nop
-;		nop
-;		outchar r2, r1
-;		
-;		inc r1
-;		
-;		cmp r0, r3
-;		jle Stage_Loop2
-;	
-;	pop r4
-;	pop r3
-;	pop r2
-;	pop r1
-;	pop r0
-;	
-;	rts
-
 Move_Cobra:
 	push r0	; Direcao / Posicao_Cobra
 	push r1	; inchar
@@ -651,23 +601,6 @@ Delay:
 	
 	rts
 	
-;Delay2: ; Delay para desenho do cenario
-;	push r0
-;	
-;	inc r6
-;	loadn r0, #1
-;	cmp r6, r0
-;	jgr Reseta_Timer
-;	
-;	jmp Fim_Timer
-;	
-;	Reseta_Timer:
-;		loadn r6, #0
-;	Fim_Timer:		
-;		pop r0
-;	
-;	rts
-
 Recomecar:
 	inchar 	r0
 	loadn 	r1, #' '
@@ -726,44 +659,6 @@ Imprimir:
 		
 	rts
 	
-	
-;********************************************************
-;                       IMPRIME TELA
-;********************************************************	
-
-ImprimeTela: 	;  Rotina de Impresao de Cenario na Tela Inteira
-		;  r1 = endereco onde comeca a primeira linha do Cenario
-		;  r2 = cor do Cenario para ser impresso
-
-	push r0	; protege o r3 na pilha para ser usado na subrotina
-	push r1	; protege o r1 na pilha para preservar seu valor
-	push r2	; protege o r1 na pilha para preservar seu valor
-	push r3	; protege o r3 na pilha para ser usado na subrotina
-	push r4	; protege o r4 na pilha para ser usado na subrotina
-	push r5	; protege o r4 na pilha para ser usado na subrotina
-
-	loadn R0, #0  	; posicao inicial tem que ser o comeco da tela!
-	loadn R3, #40  	; Incremento da posicao da tela!
-	loadn R4, #41  	; incremento do ponteiro das linhas da tela
-	loadn R5, #1200 ; Limite da tela!
-	
-   ImprimeTela_Loop:
-		call ImprimeStr
-		add r0, r0, r3  	; incrementaposicao para a segunda linha na tela -->  r0 = R0 + 40
-		add r1, r1, r4  	; incrementa o ponteiro para o comeco da proxima linha na memoria (40 + 1 porcausa do /0 !!) --> r1 = r1 + 41
-		cmp r0, r5			; Compara r0 com 1200
-		jne ImprimeTela_Loop	; Enquanto r0 < 1200
-
-	pop r5	; Resgata os valores dos registradores utilizados na Subrotina da Pilha
-	pop r4
-	pop r3
-	pop r2
-	pop r1
-	pop r0
-	rts
-				
-;---------------------
-
 ;********************************************************
 ;                   IMPRIME STRING
 ;********************************************************
