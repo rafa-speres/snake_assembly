@@ -3,6 +3,16 @@
 ; Henrique Gualberto Marques - nUSP: 13692380
 ; João Otávio Cano - nUSP: 11858651
 
+;----------- CONTROLES -------------
+;                W -> cima
+;             A  S  D
+;             |  |  \-> direita
+;             |  \-> baixo
+;             \-> esquerda
+
+
+
+
 ; ------- TABELA DE CORES -------
 ; adicione ao caracter para Selecionar a cor correspondente
 
@@ -30,15 +40,13 @@ Direcao:		var #1 ; 0-Direita, 1-baixo, 2-esquerda, 3-cima
 Posicao_Comida:	var #1
 Status_Comida:	var #1
 
-Mensagem_Derrota: 			string " SEM ALEGRIA PRO POVO "
+Mensagem_Derrota: 			string " SEM ALEGRIA PRO POVO " 
 Limpa_Mensagem_Derrota:		string "                      "
 Mensagem_Recomecar:			string " Aperte 'Space' para recomecar "
 Limpa_Mensagem_Recomecar:	string "                               "
 
-; Main
 main:
 	call Iniciar
-	;call Desenha_Mapa
 	
 	Loop:
 		Loop_Jogo:
@@ -60,7 +68,6 @@ main:
 		
 			jmp Loop_Recomecar
 	
-; Funções
 
 Iniciar:
 		
