@@ -1,15 +1,25 @@
 ; Snake do Hexa
+
+
+; Para rodar: f7 (ou Fn + f7) + Home :)
+
+
 ; Rafael Scalon Peres Conti - nUSP: 11871181
 ; Henrique Gualberto Marques - nUSP: 13692380
 ; João Otávio Cano - nUSP: 11858651
 
+
+
 ;----------- CONTROLES -------------
-;                W -> cima
-;             A  S  D
+;                w -> cima
+;             a  s  d
 ;             |  |  \-> direita
 ;             |  \-> baixo
 ;             \-> esquerda
-
+;
+;   Tecla Espaco para resetar o jogo 
+;
+;Note: os ontroles nao funcionam com o CapsLock Ligado 
 
 
 
@@ -33,17 +43,23 @@
 ; 3584 aqua							1110 0000
 ; 3840 branco						1111 0000
 
-
-Posicao_Cobra:  var #500
-Tamanho_Cobra:	var #1
-Direcao:		var #1 ; 0-Direita, 1-baixo, 2-esquerda, 3-cima
-Posicao_Comida:	var #1
-Status_Comida:	var #1
-
+;Listando strings (e strings vazias para limpar strings)
 Mensagem_Derrota: 			string " SEM ALEGRIA PRO POVO " 
 Limpa_Mensagem_Derrota:		string "                      "
-Mensagem_Recomecar:			string " Aperte 'Space' para recomecar "
-Limpa_Mensagem_Recomecar:	string "                               "
+Mensagem_Recomecar:			string " Aperte 'Espaco' para recomecar "
+Limpa_Mensagem_Recomecar:	string "                                "
+
+;Listando variaveis 
+Posicao_Cobra:  var #500
+Posicao_Comida:	var #1
+Tamanho_Cobra:	var #1
+Status_Comida:	var #1
+Direcao:		var #1 ; 0-Direita, 1-baixo, 2-esquerda, 3-cima
+                       ; sentido horario a partir da direita
+                       ;                3 
+                       ;              2   0 
+                       ;                1 
+
 
 main:
 	call Iniciar
@@ -74,32 +90,33 @@ Iniciar:
 		push r0
 		push r1
 		
+		call Apagar_Tela
 		call Desenha_Tela
 		
 		loadn r0, #4
 		store Tamanho_Cobra, r0
 		
-		; Posicao_Cobra[0] = 460
+		; Posicao_Cobra[0] = 500
 		loadn 	r0, #Posicao_Cobra
-		loadn 	r1, #460
+		loadn 	r1, #500
 		storei 	r0, r1
 		
-		; Posicao_Cobra[1] = 459
+		; Posicao_Cobra[1] = 499
 		inc 	r0
 		dec 	r1
 		storei 	r0, r1
 		
-		; Posicao_Cobra[2] = 458
+		; Posicao_Cobra[2] = 498
 		inc 	r0
 		dec 	r1
 		storei 	r0, r1
 		
-		; Posicao_Cobra[3] = 457
+		; Posicao_Cobra[3] = 497
 		inc 	r0
 		dec 	r1
 		storei 	r0, r1
 		
-		; Posicao_Cobra[4] = 456
+		; Posicao_Cobra[4] = 496
 		inc 	r0
 		dec 	r1
 		storei 	r0, r1
@@ -118,12 +135,13 @@ Iniciar:
 		pop r0
 		
 		rts
+;-------------------------------------
 		
 Desenha_Tela:
 	push r1
 	push r2
     loadn r1, #tela0Linha0	; Endereco onde comeca a primeira linha do cenario!!
-	loadn r2, #0	        ; Utiliza cor verde
+	loadn r2, #0	        ; Utiliza cor branca
 	call ImprimirTela2
 	pop r1
 	pop r2
@@ -138,7 +156,7 @@ Primeira_Cobra:
 	push r3
 	
 	loadn r0, #Posicao_Cobra		; r0 = & Posicao_Cobra
-	loadn r1, #'}'					; r1 = '}'
+	loadn r1, #2870					; r1 = '6' em amarelo
 	loadi r2, r0					; r2 = Posicao_Cobra[0]
 		
 	loadn 	r3, #0					; r3 = 0
@@ -154,7 +172,7 @@ Primeira_Cobra:
 	
 	
 	loadn 	r0, #820
-	loadn 	r1, #'*'
+	loadn 	r1, #591       ; r1 = `O` em cor verde
 	outchar r1, r0
 	store 	Posicao_Comida, r0
 	
@@ -164,7 +182,8 @@ Primeira_Cobra:
 	pop r0
 	
 	rts
-	
+;----------------------------------------
+
 Limpa_Cobra:
 	push r0
 	push r1
@@ -193,11 +212,12 @@ Limpa_Cobra:
 	pop r0
 	
 	rts
+;-------------------------------------------
 
 Move_Cobra:
 	push r0	; Direcao / Posicao_Cobra
 	push r1	; inchar
-	push r2 ; local helper
+	push r2 ; ajuda local
 	push r3
 	push r4
 	
@@ -375,6 +395,7 @@ Move_Cobra:
 		pop r0
 
 	rts
+;----------------------------------------------
 
 Troca_Comida:
 	push r0
@@ -410,19 +431,19 @@ Troca_Comida:
 	jeq Troca_Cima
 	
 	Troca_Direita:
-		loadn r3, #355
+		loadn r3, #300
 		add r1, r1, r3
 		jmp Troca_Limites
 	Troca_Baixo:
-		loadn r3, #445
+		loadn r3, #500
 		sub r1, r1, r3
 		jmp Troca_Limites
 	Troca_Esquerda:
-		loadn r3, #395
+		loadn r3, #600
 		sub r1, r1, r3
 		jmp Troca_Limites
 	Troca_Cima:
-		loadn r3, #485
+		loadn r3, #700
 		add r1, r1, r3
 		jmp Troca_Limites
 	
@@ -465,7 +486,7 @@ Troca_Comida:
 			
 		Realiza_Troca:
 			store Posicao_Comida, r1
-			loadn r0, #2927      		; r1 = `o` em cor amarela
+			loadn r0, #591       ; r1 = `O` em cor verde
 			outchar r0, r1
 	
 	Fim_Troca:
@@ -478,26 +499,22 @@ Cobra_Morreu:
 	loadn r0, #Posicao_Cobra
 	loadi r1, r0
 	
-	; Trombou na parede Direcaoeita
 	loadn r2, #40
 	loadn r3, #39
 	mod r2, r1, r2		; r2 = r1 % r2 (Teste condições de contorno)
 	cmp r2, r3
 	jeq Tratamento_Fim_Jogo
 	
-	; Trombou na parede esquerda
 	loadn r2, #40
 	loadn r3, #0
 	mod r2, r1, r2		; r2 = r1 % r2 (Teste condições de contorno)
 	cmp r2, r3
 	jeq Tratamento_Fim_Jogo
 	
-	; Trombou na parede esquerda
 	loadn r2, #40
 	cmp r1, r2
 	jle Tratamento_Fim_Jogo
 	
-	; Trombou na parede esquerda
 	loadn r2, #1160
 	cmp r1, r2
 	jgr Tratamento_Fim_Jogo
@@ -532,7 +549,7 @@ Cobra_Morreu:
 		loadn r2, #2816
 		call Imprimir
 		
-		loadn r0, #685
+		loadn r0, #684
 		loadn r1, #Mensagem_Recomecar
 		loadn r2, #512
 		call Imprimir
@@ -623,7 +640,7 @@ Recomecar:
 		loadn r2, #0
 		call Imprimir
 		
-		loadn r0, #685
+		loadn r0, #684
 		loadn r1, #Limpa_Mensagem_Recomecar
 		loadn r2, #0
 		call Imprimir
@@ -801,7 +818,7 @@ Apagar_Tela:
 	pop r0
 	rts	
 
-;Desenho do campo de futebol
+;Desenho do campo de futebol (30 linhas x 40 colunas)
 
 tela0Linha0  : string "|--------------------------------------|"
 tela0Linha1  : string "|_|                                  |_|"
@@ -833,3 +850,6 @@ tela0Linha26 : string "|                                      |"
 tela0Linha27 : string "|_                                    _|"
 tela0Linha28 : string "| |                                  | |"
 tela0Linha29 : string "|--------------------------------------|"
+
+;Sim, o hexa nao veio, mas o que vale e` a intencao ne` (comentario pos penalti do marquinhos :(  )
+;o hexa vem em 2026!
