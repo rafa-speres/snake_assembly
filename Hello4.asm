@@ -272,19 +272,19 @@ Move_Cobra:
 	Muda_Direcao:
 		inchar 	r1
 		
-		loadn r2, #100	; char r4 = 'd'
+		loadn r2, #100	; 'd'
 		cmp r1, r2
 		jeq Move_D
 		
-		loadn r2, #115	; char r4 = 's'
+		loadn r2, #115	; 's'
 		cmp r1, r2
 		jeq Move_S
 		
-		loadn r2, #97	; char r4 = 'a'
+		loadn r2, #97	; 'a'
 		cmp r1, r2
 		jeq Move_A
 		
-		loadn r2, #119	; char r4 = 'w'
+		loadn r2, #119	; 'w'
 		cmp r1, r2
 		jeq Move_W		
 		
@@ -494,6 +494,7 @@ Troca_Comida:
 		pop r0
 	
 	rts
+;------------------------------------------------------------
 
 Cobra_Morreu:
 	loadn r0, #Posicao_Cobra
@@ -559,6 +560,7 @@ Cobra_Morreu:
 	Fim_Cobra_Morreu:
 		
 	rts
+;--------------------------------------------------------
 
 Desenha_Cobra:
 	push r0
@@ -592,11 +594,6 @@ Desenha_Cobra:
 	loadi 	r2, r0			; r2 = Posicao_Cobra[Tamanho_Cobra]
 	outchar r1, r2
 	
-		;call Desenha_Tela
-	;loadn r1, #tela0Linha0	; Endereco onde comeca a primeira linha do cenario!!
-	;loadn r2, #0	        ; Utiliza cor verde
-	;call ImprimirTela2
-	
 
 	Fim_Desenha_Cobra:
 		pop	r3
@@ -624,7 +621,8 @@ Delay:
 		pop r0
 	
 	rts
-	
+;-----------------------------------------------------
+
 Recomecar:
 	inchar 	r0
 	loadn 	r1, #' '
@@ -653,6 +651,7 @@ Recomecar:
 	Fim_Recomecar:
 	
 	rts
+;-----------------------------------------------------------------
 
 Imprimir:
 	push r0		; Posição na tela para imprimir a string
@@ -682,6 +681,7 @@ Imprimir:
 		pop r0
 		
 	rts
+;---------------------------------------------------------
 	
 ;********************************************************
 ;                   IMPRIME STRING
