@@ -4,10 +4,9 @@
 ; Para rodar: f7 (ou Fn + f7) + Home :)
 
 
-; Rafael Scalon Peres Conti - nUSP: 11871181
-; Henrique Gualberto Marques - nUSP: 13692380
-; João Otávio Cano - nUSP: 11858651
-
+; Rafael Scalon Peres Conti - nUSP: 11871181 - rafael.scalon@usp.br
+; Henrique Gualberto Marques - nUSP: 13692380 - henrique.g.marques@usp.br
+; João Otávio Cano - nUSP: 11858651 - joaootaviocano@usp.br
 
 
 ;----------- CONTROLES -------------
@@ -19,12 +18,12 @@
 ;
 ;   Tecla Espaco para resetar o jogo 
 ;
-;Note: os ontroles nao funcionam com o CapsLock Ligado 
-
+;Note: os controles nao funcionam com o CapsLock Ligado 
 
 
 ; ------- TABELA DE CORES -------
 ; adicione ao caracter para Selecionar a cor correspondente
+
 
 ; 0 branco							0000 0000
 ; 256 marrom						0001 0000
@@ -43,11 +42,15 @@
 ; 3584 aqua							1110 0000
 ; 3840 branco						1111 0000
 
+
+
 ;Listando strings (e strings vazias para limpar strings)
 Mensagem_Derrota: 			string " SEM ALEGRIA PRO POVO " 
 Limpa_Mensagem_Derrota:		string "                      "
 Mensagem_Recomecar:			string " Aperte 'Espaco' para recomecar "
 Limpa_Mensagem_Recomecar:	string "                                "
+
+
 
 ;Listando variaveis 
 Posicao_Cobra:  var #500
@@ -59,6 +62,8 @@ Direcao:		var #1 ; 0-Direita, 1-baixo, 2-esquerda, 3-cima
                        ;                3 
                        ;              2   0 
                        ;                1 
+
+
 
 
 main:
@@ -83,7 +88,9 @@ main:
 			call Recomecar
 		
 			jmp Loop_Recomecar
-	
+;------------------------------	
+
+
 
 Iniciar:
 		
@@ -121,7 +128,7 @@ Iniciar:
 		dec 	r1
 		storei 	r0, r1
 		
-		; Posicao_Cobra[5] = -1
+		; Posicao_Cobra[5] = 
 		inc 	r0
 		loadn 	r1, #0
 		storei 	r0, r1
@@ -155,7 +162,7 @@ Primeira_Cobra:
 	push r2
 	push r3
 	
-	loadn r0, #Posicao_Cobra		; r0 = & Posicao_Cobra
+	loadn r0, #Posicao_Cobra		; r0 = END(Posicao_Cobra)
 	loadn r1, #2870					; r1 = '6' em amarelo
 	loadi r2, r0					; r2 = Posicao_Cobra[0]
 		
@@ -271,7 +278,8 @@ Move_Cobra:
 	
 	Muda_Direcao:
 		inchar 	r1
-		
+;       escolhe direcao do movimento
+
 		loadn r2, #100	; 'd'
 		cmp r1, r2
 		jeq Move_D
@@ -396,6 +404,48 @@ Move_Cobra:
 
 	rts
 ;----------------------------------------------
+
+Desenha_Cobra:
+	push r0
+	push r1
+	push r2
+	push r3 
+
+	; Sincronização
+	loadn 	r0, #1000
+	loadn 	r1, #0
+	mod 	r0, r6, r0		; r1 = r0 % r1 (Teste condições de contorno)
+	cmp 	r0, r1
+	jne Fim_Desenha_Cobra
+	; =============
+	
+	call Desenha_Tela
+	
+	load 	r0, Posicao_Comida
+	loadn 	r1, #591       ; r1 = `O` em cor verde
+	outchar r1, r0
+	
+	loadn 	r0, #Posicao_Cobra	; r0 = end Posicao_Cobra
+	loadn 	r1, #2870	    ; r1 = '6 amarelo'
+	loadi 	r2, r0			; r2 = Posicao_Cobra[0]
+	outchar r1, r2			
+	
+	loadn 	r0, #Posicao_Cobra	; r0 = & Posicao_Cobra
+	loadn 	r1, #' '		; r1 = ' '
+	load 	r3, Tamanho_Cobra	; r3 = Tamanho_Cobra
+	add 	r0, r0, r3		; r0 += Tamanho_Cobra
+	loadi 	r2, r0			; r2 = Posicao_Cobra[Tamanho_Cobra]
+	outchar r1, r2
+	
+
+	Fim_Desenha_Cobra:
+		pop	r3
+		pop r2
+		pop r1
+		pop r0
+	
+	rts
+;----------------------------------
 
 Troca_Comida:
 	push r0
@@ -561,48 +611,6 @@ Cobra_Morreu:
 		
 	rts
 ;--------------------------------------------------------
-
-Desenha_Cobra:
-	push r0
-	push r1
-	push r2
-	push r3 
-
-	; Sincronização
-	loadn 	r0, #1000
-	loadn 	r1, #0
-	mod 	r0, r6, r0		; r1 = r0 % r1 (Teste condições de contorno)
-	cmp 	r0, r1
-	jne Fim_Desenha_Cobra
-	; =============
-	
-	call Desenha_Tela
-	
-	load 	r0, Posicao_Comida
-	loadn 	r1, #591       ; r1 = `O` em cor verde
-	outchar r1, r0
-	
-	loadn 	r0, #Posicao_Cobra	; r0 = end Posicao_Cobra
-	loadn 	r1, #2870	    ; r1 = '6 amarelo'
-	loadi 	r2, r0			; r2 = Posicao_Cobra[0]
-	outchar r1, r2			
-	
-	loadn 	r0, #Posicao_Cobra	; r0 = & Posicao_Cobra
-	loadn 	r1, #' '		; r1 = ' '
-	load 	r3, Tamanho_Cobra	; r3 = Tamanho_Cobra
-	add 	r0, r0, r3		; r0 += Tamanho_Cobra
-	loadi 	r2, r0			; r2 = Posicao_Cobra[Tamanho_Cobra]
-	outchar r1, r2
-	
-
-	Fim_Desenha_Cobra:
-		pop	r3
-		pop r2
-		pop r1
-		pop r0
-	
-	rts
-;----------------------------------
 
 	
 Delay:
