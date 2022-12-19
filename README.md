@@ -8,3 +8,5 @@ Comandos:
   -Movimentação com WASD, reset do game com espaço
   
   -Para rodar o jogo, f7 (ou Fn + f7) + Home
+
+LINK DO VIDEO SOBRE O JOGO: https://www.youtube.com/watch?v=nyNO1NNLV8g
